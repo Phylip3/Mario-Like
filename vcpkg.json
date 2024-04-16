@@ -1,0 +1,8 @@
+{
+    "name": "pong",
+    "description": "a lan pong",
+    "version-string": "0.1.0",
+    "dependencies": [
+        "sfml"
+    ]
+}
