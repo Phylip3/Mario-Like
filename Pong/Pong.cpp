@@ -16,7 +16,7 @@ int main() {
 //    sf::RenderWindow window(sf::VideoMode(800, 600), "Pong Menu");
 //    sf::Font font;
 //   
-//    if (!font.loadFromFile("includes/police/ArialMT.ttf")) {
+//    if (!font.loadFromFile("../../../Pong/includes/police/ArialMT.ttf")) {
 //        std::cerr << "Error loading font\n";
 //        return 1;
 //    }
