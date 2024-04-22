@@ -1,5 +1,5 @@
 #include "includes/Game.h"
-#include "includes/Server.h" // Include the server's header
+#include "includes/Server/Server.h" // Include the server's header
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -19,11 +19,12 @@ int main() {
     sf::Text menuItems[2];
     std::string titles[2] = { "Nouveau serveur", "Rejoindre une partie" };
     sf::Text inputText("", font, 24);
+    sf::Vector2u windowSize = window.getSize();
     inputText.setFillColor(sf::Color::White);
-    inputText.setPosition(300, 350);
+    inputText.setPosition(windowSize.x / 2, windowSize.y / 2);
     sf::Text serverStatus("", font, 24); // Text for displaying server status
     serverStatus.setFillColor(sf::Color::Green);
-    serverStatus.setPosition(300, 500); // Position the status message below the menu
+    serverStatus.setPosition(windowSize.x / 2, windowSize.y / 2); // Position the status message below the menu
 
     std::string userInput = "";
     bool enteringText = false;

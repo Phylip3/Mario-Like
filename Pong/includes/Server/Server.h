@@ -14,4 +14,3 @@ void handle_client(SOCKET clientSocket);
 void startServer();  // Declare the function that starts the server
 
 #endif // SERVER_H
-
