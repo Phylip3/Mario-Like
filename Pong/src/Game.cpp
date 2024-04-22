@@ -1,4 +1,5 @@
 #include "../includes/Game.h"
+#include <iostream>
 
 Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle(), rightPaddle() {
     leftPaddle.setSize(sf::Vector2f(10, 100));
@@ -20,25 +21,38 @@ void Game::run() {
 void Game::processEvents() {
     sf::Event event;
     while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
-            window.close();
+        if (event.type == sf::Event::Closed) {
 
-        if (event.type == sf::Event::KeyPressed)
+            window.close();
+        }
+
+        if (event.type == sf::Event::KeyPressed) {
+
             handlePlayerInput(event.key.code, true);
-        else if (event.type == sf::Event::KeyReleased)
+        }
+
+        else if (event.type == sf::Event::KeyReleased) {
             handlePlayerInput(event.key.code, false);
+
+        }
     }
 }
 
 void Game::update(sf::Time deltaTime) {
-    if (isMovingUp)
+    if (isMovingUp == 1) {
+        //cout move up
+        //std::cout << "up\n";
         leftPaddle.move(0, -200 * deltaTime.asSeconds());
-    if (isMovingDown)
+    }
+    if (isMovingDown == 1) {
         leftPaddle.move(0, 200 * deltaTime.asSeconds());
-    if (isMovingLeft)
+    }
+    if (isMovingLeft == 1) {
         rightPaddle.move(0, -200 * deltaTime.asSeconds());
-    if (isMovingRight)
+    }
+    if (isMovingRight == 1) {
         rightPaddle.move(0, 200 * deltaTime.asSeconds());
+    }
 }
 
 void Game::render() {
@@ -49,12 +63,26 @@ void Game::render() {
 }
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed) {
-    if (key == sf::Keyboard::Z)
+    if (key == sf::Keyboard::Z) {
+        std::cout << "Z key pressed\n";
+        //count is pressed
+        std::cout << isPressed << std::endl;
         isMovingUp = isPressed;
-    else if (key == sf::Keyboard::S)
+    }
+    else if (key == sf::Keyboard::S) {
+        std::cout << "S key pressed\n";
         isMovingDown = isPressed;
+
+    }
+
     else if (key == sf::Keyboard::Up)
+    {
+        std::cout << "Up key pressed\n";
         isMovingLeft = isPressed;
-    else if (key == sf::Keyboard::Down)
+    }
+    else if (key == sf::Keyboard::Down) {
+        std::cout << "Down key pressed\n";
+
         isMovingRight = isPressed;
+    }
 }
