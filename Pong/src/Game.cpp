@@ -1,7 +1,7 @@
 #include "../includes/Game.h"
 #include <iostream>
 
-Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle(10, 200), rightPaddle(620, 200), ball(320, 240)
+Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle( 10 , (window.getSize().y/2) - 50), rightPaddle(window.getSize().x - 20, window.getSize().y/2 - 50), ball(window.getSize().x/2, window.getSize().y/2), scoreManager(window)
 {
 }
 
@@ -18,6 +18,8 @@ void Game::run() {
 void Game::processEvents() {
     sf::Event event;
     while (window.pollEvent(event)) {
+    
+        std::cout <<  (window.getSize().y/2) - (leftPaddle.getSize().y/2) << std::endl;
         if (event.type == sf::Event::Closed) {
 
             window.close();
@@ -51,12 +53,28 @@ void Game::update(sf::Time deltaTime) {
 
     ball.update(deltaTime, leftPaddle, rightPaddle, window.getSize().y);
 
+    // Récupérer la position x de la balle et son rayon pour déterminer si elle a franchi les limites
+    float ballX = ball.getPosition().x;
+    float ballRadius = ball.getRadius();
+
+    // Vérifie si la balle passe la limite gauche de la fenêtre
+    if (ballX + ballRadius < 0) {  // Si le centre de la balle plus son rayon est inférieur à 0, elle est passée à gauche
+        scoreManager.addScoreRight();  // Ajoute un point au joueur de droite
+        ball.resetPosition(320, 240);  // Réinitialiser la position de la balle au centre de la fenêtre
+    } 
+    // Vérifie si la balle passe la limite droite de la fenêtre
+    else if (ballX - ballRadius > window.getSize().x) {  // Si le centre de la balle moins son rayon dépasse la largeur de la fenêtre, elle est passée à droite
+        scoreManager.addScoreLeft();  // Ajoute un point au joueur de gauche
+        ball.resetPosition(320, 240);  // Réinitialiser la balle
+    }
+
 }
 
 void Game::render() {
     window.clear();
     leftPaddle.draw(window);
     rightPaddle.draw(window);
+    scoreManager.draw(window);
     ball.draw(window);
     window.display();
 }

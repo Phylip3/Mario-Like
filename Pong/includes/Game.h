@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "CoreGame/Paddle.h"
 #include "CoreGame/Ball.h"
+#include "CoreGame/ScoreManager.h"
 
 class Game {
 public:
@@ -26,7 +27,9 @@ private:
     bool isMovingDown = false;
     bool isMovingLeft = false;
     bool isMovingRight = false;
-};
+
+    ScoreManager scoreManager;
+};  
 
 #endif
 

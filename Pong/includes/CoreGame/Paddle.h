@@ -17,6 +17,7 @@ public:
 
 private:
     sf::RectangleShape paddleShape;
+    float speed;
     float velocity;
 };
 

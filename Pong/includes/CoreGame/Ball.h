@@ -16,6 +16,10 @@ public:
     void resetPosition(float mX, float mY);
     bool checkCollisionWithPaddle(const Paddle& paddle);
     void setDirection(float x, float y);
+    //get position
+    sf::Vector2f getPosition() const;
+    //get radius
+    float getRadius() const;
 
 private:
     sf::CircleShape ballShape;

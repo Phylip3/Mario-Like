@@ -7,9 +7,9 @@
 #include <cstdlib>  // Pour rand()
 #include <ctime>    // Pour time()
 
-Ball::Ball(float mX, float mY) : velocity(200.f, 200.f) {
+Ball::Ball(float mX, float mY) : velocity(400.f, 400.f) {
     srand(time(NULL));
-    ballShape.setRadius(30.f);
+    ballShape.setRadius(10.f);
     //ballShape.setFillColor(sf::Color::Green);
     ballShape.setPosition(mX, mY);
 }
@@ -74,10 +74,14 @@ void Ball::bounceOffPaddle(const Paddle& paddle) {
     float impactFactor = difference / (paddle.getSize().y / 2); // -1 à 1 où 0 est le centre
 
     // Influence verticale basée sur le point d'impact
-    float newYVelocity = 200 * impactFactor; // Multiplier par 5 pour augmenter l'effet
+    // Utilisation de tan pour simuler un angle de rebond qui change progressivement
+    float angleRadians = std::atan(impactFactor); // atan retourne un angle en radians
+    float newYVelocity = 300 * std::sin(angleRadians); // Utiliser sin pour obtenir la composante y
 
-    // Inversion de la direction horizontale
-    float speedIncrease = 1.05; // Augmenter de 5%
+    std::cout << "New Y velocity: " << newYVelocity << ", Impact factor: " << impactFactor << std::endl;
+
+    // Inversion de la direction horizontale avec une légère augmentation de la vitesse
+    float speedIncrease = 1.10; // Augmenter de 10%
     velocity.x = -velocity.x * speedIncrease;
     velocity.y = newYVelocity * speedIncrease;
 }
@@ -87,15 +91,35 @@ void Ball::startMovement() {
     {
         return;
     }
-    float angle = (rand() % 360) * (M_PI / 180.0f);  // Angle aléatoire en radians
-    std::cout << "Balle lancée!" << (rand() % 360) * (M_PI / 180.0f) << std::endl; 
-    velocity.x = 200.0f * std::cos(angle);  // Calculer la composante x basée sur l'angle
-    velocity.y = 200.0f * std::sin(angle);  // Calculer la composante y basée sur l'angle
-    isMoving = true;  // Permettre le mouvement de la balle
+    // Définir les plages d'angles acceptables (en degrés)
+    std::vector<std::pair<int, int>> ranges = {
+        {10, 80}, {100, 260}, {280, 350}  // Exclure les plages proches de 90° et 270°
+    };
+
+    // Choisir une plage aléatoirement
+    int rangeIndex = rand() % ranges.size();
+    int angle = rand() % (ranges[rangeIndex].second - ranges[rangeIndex].first) + ranges[rangeIndex].first;
+
+    // Convertir l'angle en radians
+    float rad = angle * (M_PI / 180.0f);
+
+    // Définir la vitesse en utilisant l'angle
+    velocity.x = 300.0f * cos(rad);
+    velocity.y = 300.0f * sin(rad);
+
+    isMoving = true;  // Permettre le mouvement de la balle 
     
 }
 
 void Ball::resetPosition(float mX, float mY) {
     ballShape.setPosition(mX, mY);
     isMoving = false;
+}
+
+sf::Vector2f Ball::getPosition() const {
+    return ballShape.getPosition();
+}
+
+float Ball::getRadius() const {
+    return ballShape.getRadius();
 }
