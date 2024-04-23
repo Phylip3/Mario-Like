@@ -1,5 +1,6 @@
 #include "includes/Game.h"
 #include "includes/Server/Server.h" // Include the server's header
+#include "includes/Client/Client.h"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -7,7 +8,8 @@
 #include <SFML/Window.hpp>
 #include <thread> // Include support for std::thread
 
-/*
+bool isConnected = false;
+
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Pong Menu");
     sf::Font font;
@@ -63,6 +65,12 @@ int main() {
                                         });
                                     serverStatus.setString("Serveur lancé sur le port 2001!"); // Update the status text
                                 }
+                                else if (titles[i] == "Rejoindre une partie") {
+                                    connectToServer();
+                                    isConnected = true;
+                                    Game game;
+                                    Game render();
+                                }
                             }
                         }
                     }
@@ -83,6 +91,11 @@ int main() {
             window.clear();
             window.draw(serverStatus); // Draw the server status message if the server is running
         }
+        if (isConnected) {
+            window.clear();
+            Game game;
+            game.run();
+        }
         window.display();
     }
 
@@ -92,11 +105,10 @@ int main() {
 
     return 0;
 }
-*/
 
-int main() {
-    Game game;
-    game.run();
-    return 0;
-}
-    
+
+//int main() {
+//    Game game;
+//    game.run();
+//    return 0;
+//}

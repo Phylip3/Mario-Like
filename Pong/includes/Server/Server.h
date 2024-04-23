@@ -1,16 +1,23 @@
 #ifndef SERVER_H
 #define SERVER_H
+#define NOMINMAX
 
 #include <vector>
 #include <mutex>
 #include <winsock2.h>
 
-// Global variables for maintaining the list of connected clients
-extern std::vector<SOCKET> clients;
-extern std::mutex clients_mutex;
+struct Client {
+    SOCKET socket;
+    int id;
+};
 
-// Function declarations
-void handle_client(SOCKET clientSocket);
-void startServer();  // Declare the function that starts the server
+extern std::vector<Client> clients;
+extern std::mutex clients_mutex;
+extern volatile bool serverShouldStop;
+extern SOCKET serverSocket;
+
+void handle_client(Client client);
+void startServer();
+void stopServer();
 
 #endif // SERVER_H

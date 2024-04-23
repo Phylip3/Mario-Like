@@ -1,4 +1,5 @@
 #include "../../includes/Server/Server.h"
+#include "../../includes/Client/Client.h"
 #include <iostream>
 #include <algorithm>
 #include <thread>
@@ -6,41 +7,43 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-std::vector<SOCKET> clients;
+std::vector<Client> clients;
 std::mutex clients_mutex;
+volatile bool serverShouldStop = false;
+SOCKET serverSocket;
 
-void handle_client(SOCKET clientSocket) {
+void handle_client(Client client) {
     char buffer[1024];
     while (true) {
         memset(buffer, 0, sizeof(buffer));
-        int bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
+        int bytesReceived = recv(client.socket, buffer, sizeof(buffer), 0);
         if (bytesReceived <= 0) {
             std::cerr << "Connection closed or error\n";
             break;
         }
 
         std::lock_guard<std::mutex> guard(clients_mutex);
-        for (SOCKET outSock : clients) {
-            if (outSock != clientSocket) {
-                send(outSock, buffer, bytesReceived, 0);
+        for (const Client& other : clients) {
+            if (other.socket != client.socket) {
+                send(other.socket, buffer, bytesReceived, 0);
             }
         }
     }
 
     {
         std::lock_guard<std::mutex> guard(clients_mutex);
-        clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
-        closesocket(clientSocket);
+        clients.erase(std::remove_if(clients.begin(), clients.end(),
+            [&client](const Client& c) { return c.socket == client.socket; }), clients.end());
+        closesocket(client.socket);
     }
 }
 
 void startServer() {
     WSADATA WSAData;
-    SOCKET serverSocket;
-    SOCKADDR_IN serverAddr;
-
     WSAStartup(MAKEWORD(2, 0), &WSAData);
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+
+    SOCKADDR_IN serverAddr;
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(2003);
@@ -49,20 +52,30 @@ void startServer() {
     listen(serverSocket, 0);
     std::cout << "Listening for incoming connections..." << std::endl;
 
-    while (true) {
+    while (!serverShouldStop && clients.size() < 2) {
         SOCKADDR_IN clientAddr;
         int clientAddrSize = sizeof(clientAddr);
         SOCKET clientSocket = accept(serverSocket, (SOCKADDR*)&clientAddr, &clientAddrSize);
-        if (clientSocket != INVALID_SOCKET) {
+        if (clientSocket != INVALID_SOCKET && clients.size() < 2) {
             std::cout << "Client connected!" << std::endl;
-            std::thread clientThread(handle_client, clientSocket);
+            Client newClient = { clientSocket, static_cast<int>(clients.size() + 1) };
+            std::lock_guard<std::mutex> guard(clients_mutex);
+            clients.push_back(newClient);
+            std::thread clientThread(handle_client, newClient);
             clientThread.detach();
         }
         else {
-            std::cerr << "Failed to accept client\n";
+            std::cerr << "Failed to accept client or server full\n";
+            closesocket(clientSocket);  // Close the socket if the server is full
         }
     }
 
     closesocket(serverSocket);
+    WSACleanup();
+}
+
+void stopServer() {
+    closesocket(serverSocket);
+    serverShouldStop = true;
     WSACleanup();
 }
