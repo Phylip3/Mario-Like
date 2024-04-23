@@ -7,6 +7,7 @@
 #include <SFML/Window.hpp>
 #include <thread> // Include support for std::thread
 
+/*
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Pong Menu");
     sf::Font font;
@@ -91,10 +92,11 @@ int main() {
 
     return 0;
 }
+*/
 
-
-//int main() {
-//    Game game;
-//    game.run();
-//    return 0;
-//}
+int main() {
+    Game game;
+    game.run();
+    return 0;
+}
+    

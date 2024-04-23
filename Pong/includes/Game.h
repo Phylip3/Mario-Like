@@ -2,6 +2,8 @@
 #define GAME_H
 
 #include <SFML/Graphics.hpp>
+#include "CoreGame/Paddle.h"
+#include "CoreGame/Ball.h"
 
 class Game {
 public:
@@ -15,13 +17,15 @@ private:
     void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
 
     sf::RenderWindow window;
-    sf::RectangleShape leftPaddle;
-    sf::RectangleShape rightPaddle;
+    Ball ball;
 
-    bool isMovingUp;
-    bool isMovingDown;
-    bool isMovingLeft;
-    bool isMovingRight;
+    Paddle leftPaddle;
+    Paddle rightPaddle;
+
+    bool isMovingUp = false;
+    bool isMovingDown = false;
+    bool isMovingLeft = false;
+    bool isMovingRight = false;
 };
 
 #endif

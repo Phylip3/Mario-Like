@@ -1,19 +1,35 @@
-﻿#include "../../includes/Game.h"
-#include "../../includes/CoreGame/Paddle.h" 
-#include <iostream>
+﻿#include "../../includes/CoreGame/Paddle.h"
 
-/*
-Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle(), rightPaddle() {
-    // Obtenir les dimensions de la fenêtre
-    sf::Vector2u windowSize = window.getSize();
-    // Calculer la position Y pour placer les paddles à la moitié de la hauteur de la fenêtre
-    float paddleY = (windowSize.y - leftPaddle.getSize().y) / 2.0f;
-
-    // Positionner les paddles
-    leftPaddle.setSize(sf::Vector2f(10, 100));
-    leftPaddle.setPosition(10, paddleY);
-
-    rightPaddle.setSize(sf::Vector2f(10, 100));
-    rightPaddle.setPosition(windowSize.x - rightPaddle.getSize().x - 10, paddleY);
+Paddle::Paddle(float mX, float mY) : paddleShape(sf::Vector2f(10, 100)), velocity(200) {
+    paddleShape.setPosition(mX, mY);
 }
-*/
+
+void Paddle::moveUp(sf::Time deltaTime) {
+    float move = -200 * deltaTime.asSeconds();
+    if (paddleShape.getPosition().y + move > 0) {
+        paddleShape.move(0, move);
+    }
+}
+
+void Paddle::moveDown(sf::Time deltaTime, float windowHeight) {
+    float move = 200 * deltaTime.asSeconds();
+    if (paddleShape.getPosition().y + paddleShape.getSize().y + move < windowHeight) {
+        paddleShape.move(0, move);
+    }
+}
+
+void Paddle::draw(sf::RenderWindow& window) {
+    window.draw(paddleShape);
+}
+
+sf::Vector2f Paddle::getSize() const {
+    return paddleShape.getSize();
+}
+
+// Paddle.cpp
+sf::FloatRect Paddle::getGlobalBounds() const {
+    return paddleShape.getGlobalBounds();
+}
+sf::Vector2f Paddle::getPosition() const {
+    return paddleShape.getPosition();
+}
