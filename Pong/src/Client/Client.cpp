@@ -8,7 +8,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-const char* SERVER_IP = "10.33.69.166";  // Server IP address
+const char* SERVER_IP = "192.168.0.17";  // Server IP address
 const int SERVER_PORT = 2003;          // Server port
 
 void receiveMessages(SOCKET clientSocket) {
@@ -59,6 +59,6 @@ void connectToServer() {
     std::thread receiverThread(receiveMessages, clientSocket);
     receiverThread.detach();
 
-    closesocket(clientSocket);
-    WSACleanup();
+    /*closesocket(clientSocket);
+    WSACleanup();*/
 }
