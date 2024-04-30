@@ -1,4 +1,6 @@
 #include "../includes/Game.h"
+#include "../includes/Client/Client.h"
+#include "../includes/CoreGame/Menu.h"
 #include <iostream>
 
 Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle( 10 , (window.getSize().y/2) - 50), rightPaddle(window.getSize().x - 20, window.getSize().y/2 - 50), ball(window.getSize().x/2, window.getSize().y/2), scoreManager(window)
@@ -7,6 +9,8 @@ Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle( 10 , (w
 
 void Game::run() {
     sf::Clock clock;
+    serverThread = std::thread(&Game::receiveServerMessages, this);
+
     while (window.isOpen()) {
         sf::Time deltaTime = clock.restart();
         processEvents();
@@ -15,14 +19,51 @@ void Game::run() {
     }
 }
 
+void Game::receiveServerMessages() {
+    char buffer[1024];
+    while (true) {
+        std::cout << "Received message: blaaaza";
+        memset(buffer, 0, sizeof(buffer));
+        int bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
+        if (bytesReceived > 0) {
+            std::cout << "Received message: " << buffer << std::endl;
+            std::string message(buffer);
+            processServerCommand(message);
+        }
+        /*else if (bytesReceived == 0) {
+            std::cout << "Server disconnected.\n";
+            break;
+        }
+        else {
+            std::cerr << "Error occurred: " << WSAGetLastError() << std::endl;
+            continue;
+        }*/
+    }
+}
+
+
+void Game::processServerCommand(const std::string& command) {
+    if (command == "Z") {
+        isMovingUp = true;  // Exemple de commande, ajustez selon le gameplay
+    }
+    else if (command == "StopZ") {
+        isMovingUp = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+    }
+    // Ajoutez d'autres commandes selon vos besoins
+}
+
 void Game::processEvents() {
     sf::Event event;
     while (window.pollEvent(event)) {
     
-        std::cout <<  (window.getSize().y/2) - (leftPaddle.getSize().y/2) << std::endl;
+        /*std::cout <<  (window.getSize().y/2) - (leftPaddle.getSize().y/2) << std::endl;*/
         if (event.type == sf::Event::Closed) {
 
             window.close();
+            std::terminate();
+            if (&Menu::isConnected) {
+                &Menu::setNotConnected;
+            }
         }
 
         if (event.type == sf::Event::KeyPressed) {
@@ -86,18 +127,25 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed) {
     case sf::Keyboard::Space:
         ball.startMovement();
         break;
-    case sf::Keyboard::Z:
-        isMovingUp = isPressed;
-        break;
-    case sf::Keyboard::S:
-        isMovingDown = isPressed;
-        break;
-    case sf::Keyboard::Up:
-        isMovingLeft = isPressed;
-        break;
-    case sf::Keyboard::Down:
-        isMovingRight = isPressed;
+    case sf::Keyboard::Z: {
+        /*isMovingUp = isPressed;*/
+        sendToServer(clientSocket, "Z");
         break;
     }
-    
+    case sf::Keyboard::S: {
+        /*isMovingDown = isPressed;*/
+        sendToServer(clientSocket, "S");
+        break;
+    }
+    case sf::Keyboard::Up: {
+        /*isMovingLeft = isPressed;*/
+        sendToServer(clientSocket, "U");
+        break;
+    }
+    case sf::Keyboard::Down: {
+        /*isMovingRight = isPressed;*/
+        sendToServer(clientSocket, "D");
+        break;
+    }
+    }
 }

@@ -8,8 +8,10 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-const char* SERVER_IP = "192.168.0.17";  // Server IP address
-const int SERVER_PORT = 2003;          // Server port
+const char* SERVER_IP = "10.33.69.166";  // Server IP address
+const int SERVER_PORT = 2003;  // Server port
+
+SOCKET clientSocket;
 
 void receiveMessages(SOCKET clientSocket) {
     char buffer[1024];
@@ -31,7 +33,7 @@ void connectToServer() {
         std::cerr << "WSAStartup failed: " << result << "\n";
     }
 
-    SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (clientSocket == INVALID_SOCKET) {
         std::cerr << "Failed to create socket: " << WSAGetLastError() << "\n";
         WSACleanup();
@@ -61,4 +63,8 @@ void connectToServer() {
 
     /*closesocket(clientSocket);
     WSACleanup();*/
+}
+
+void sendToServer(SOCKET sock, const std::string& message) {
+    send(sock, message.c_str(), message.size(), 0);
 }

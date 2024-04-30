@@ -22,10 +22,14 @@ void handle_client(Client client) {
             break;
         }
 
+        // Afficher le message reçu dans la console du serveur
+        std::cout << "Message received from client " << client.id << ": " << buffer << std::endl;
+
         std::lock_guard<std::mutex> guard(clients_mutex);
         for (const Client& other : clients) {
             if (other.socket != client.socket) {
                 send(other.socket, buffer, bytesReceived, 0);
+                std::cout << "Message send !";
             }
         }
     }

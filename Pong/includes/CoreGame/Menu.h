@@ -14,6 +14,8 @@ public:
     void draw();
     bool isServerRunning() const;
     bool isConnected() const;
+    void setNotConnected();
+
 
 private:
     sf::RenderWindow& window;
@@ -23,10 +25,10 @@ private:
     sf::Text serverStatus;
     std::string titles[2];
     std::string userInput;
+    bool isConnectedFlag;
     bool enteringText;
     int selectedItem;
     bool serverRunning;
-    bool isConnectedFlag;
     std::thread serverThread;  // To handle the server
 };
 

@@ -99,8 +99,10 @@ void Menu::draw() {
         window.draw(serverStatus);
     }
     if (isConnectedFlag) {
+        window.close();
         Game game;
         game.run();
+        window.close();
     }
 }
 
@@ -110,4 +112,8 @@ bool Menu::isServerRunning() const {
 
 bool Menu::isConnected() const {
     return isConnectedFlag;
+}
+
+void Menu::setNotConnected() {
+    isConnectedFlag = false;
 }

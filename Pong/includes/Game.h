@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <SFML/Graphics.hpp>
+#include <thread>
 #include "CoreGame/Paddle.h"
 #include "CoreGame/Ball.h"
 #include "CoreGame/ScoreManager.h"
@@ -16,10 +17,12 @@ private:
     void update(sf::Time deltaTime);
     void render();
     void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+    void receiveServerMessages();
+    void processServerCommand(const std::string& command);
 
     sf::RenderWindow window;
     Ball ball;
-
+    std::thread serverThread;
     Paddle leftPaddle;
     Paddle rightPaddle;
 
