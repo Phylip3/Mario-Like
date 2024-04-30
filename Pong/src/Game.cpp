@@ -22,24 +22,39 @@ void Game::run() {
 void Game::receiveServerMessages() {
     char buffer[1024];
     while (true) {
-        std::cout << "Received message: blaaaza";
         memset(buffer, 0, sizeof(buffer));
         int bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
+
         if (bytesReceived > 0) {
             std::cout << "Received message: " << buffer << std::endl;
             std::string message(buffer);
             processServerCommand(message);
         }
-        /*else if (bytesReceived == 0) {
+        else if (bytesReceived == 0) {
             std::cout << "Server disconnected.\n";
-            break;
+            break;  // Sortie de la boucle pour arrêter le thread proprement
         }
         else {
-            std::cerr << "Error occurred: " << WSAGetLastError() << std::endl;
-            continue;
-        }*/
+            int error = WSAGetLastError();
+            std::cerr << "recv failed with error: " << error << std::endl;
+
+            // Traiter des erreurs spécifiques si nécessaire
+            if (error == WSAECONNRESET) {
+                std::cerr << "Connection reset by peer.\n";
+            }
+            else if (error == WSAENOTSOCK) {
+                std::cerr << "Socket operation on non-socket.\n";
+            }
+            else if (error == WSAENOTCONN) {
+                std::cerr << "Socket is not connected.\n";
+            }
+
+            // Selon l'erreur, vous pourriez vouloir fermer la connexion ou essayer de récupérer
+            break;  // Sortie de la boucle pour arrêter le thread proprement en cas d'erreur
+        }
     }
 }
+
 
 
 void Game::processServerCommand(const std::string& command) {
