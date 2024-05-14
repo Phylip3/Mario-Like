@@ -2,14 +2,23 @@
 #include "../includes/Client/Client.h"
 #include "../includes/CoreGame/Menu.h"
 #include <iostream>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <SFML/Network.hpp>
+#include <stdexcept>
+
+Game* Game::instance = nullptr;
 
 Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle( 10 , (window.getSize().y/2) - 50), rightPaddle(window.getSize().x - 20, window.getSize().y/2 - 50), ball(window.getSize().x/2, window.getSize().y/2), scoreManager(window)
 {
+    if (instance == nullptr)
+    {
+        instance = this;
+    }
 }
 
 void Game::run() {
     sf::Clock clock;
-    serverThread = std::thread(&Game::receiveServerMessages, this);
 
     while (window.isOpen()) {
         sf::Time deltaTime = clock.restart();
@@ -19,50 +28,61 @@ void Game::run() {
     }
 }
 
-void Game::receiveServerMessages() {
+void Game::receiveMessages() {
     char buffer[1024];
+    SOCKET clientSocket = getClientSocket();
     while (true) {
         memset(buffer, 0, sizeof(buffer));
         int bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
-
         if (bytesReceived > 0) {
-            std::cout << "Received message: " << buffer << std::endl;
-            std::string message(buffer);
-            processServerCommand(message);
+            std::cout << "Message from server: " << buffer << "\n";
+            Game::processServerCommand(buffer);
         }
         else if (bytesReceived == 0) {
             std::cout << "Server disconnected.\n";
-            break;  // Sortie de la boucle pour arrêter le thread proprement
+            break;
         }
         else {
             int error = WSAGetLastError();
-            std::cerr << "recv failed with error: " << error << std::endl;
-
-            // Traiter des erreurs spécifiques si nécessaire
-            if (error == WSAECONNRESET) {
-                std::cerr << "Connection reset by peer.\n";
+            if (error != WSAEWOULDBLOCK) {
+                std::cerr << "Recv failed with error: " << error << "\n";
+                break;
             }
-            else if (error == WSAENOTSOCK) {
-                std::cerr << "Socket operation on non-socket.\n";
-            }
-            else if (error == WSAENOTCONN) {
-                std::cerr << "Socket is not connected.\n";
-            }
-
-            // Selon l'erreur, vous pourriez vouloir fermer la connexion ou essayer de récupérer
-            break;  // Sortie de la boucle pour arrêter le thread proprement en cas d'erreur
+            // Else it is WSAEWOULDBLOCK, no data available yet, continue the loop
         }
     }
+    closesocket(clientSocket); // Make sure to close the socket when finished
+    WSACleanup();
 }
 
-
-
-void Game::processServerCommand(const std::string& command) {
-    if (command == "Z") {
+void Game::processServerCommand(char command[1024]) {
+    std::cout << command;
+    if (strcmp(command, "Z") == 0) {
         isMovingUp = true;  // Exemple de commande, ajustez selon le gameplay
     }
-    else if (command == "StopZ") {
+    else if (strcmp(command, "stopZ") == 0) {
         isMovingUp = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+    }
+    else if (strcmp(command, "S") == 0) {
+        isMovingDown = true;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+    }
+    else if (strcmp(command, "stopS") == 0) {
+        isMovingDown = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+    }
+    else if (strcmp(command, "U") == 0) {
+        isMovingLeft = true;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+    }
+    else if (strcmp(command, "stopU") == 0) {
+        isMovingLeft = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+    }
+    else if (strcmp(command, "D") == 0) {
+        isMovingRight = true;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+    }
+    else if (strcmp(command, "stopD") == 0) {
+        isMovingRight = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+    }
+    else if (strcmp(command, "Space") == 0) {
+        ball.startMovement();  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
     }
     // Ajoutez d'autres commandes selon vos besoins
 }
@@ -75,7 +95,6 @@ void Game::processEvents() {
         if (event.type == sf::Event::Closed) {
 
             window.close();
-            std::terminate();
             if (&Menu::isConnected) {
                 &Menu::setNotConnected;
             }
@@ -137,29 +156,51 @@ void Game::render() {
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed) {
     //if (!isPressed) return;
+    SOCKET TestSocket = getClientSocket();
     
     switch (key) {
     case sf::Keyboard::Space:
-        ball.startMovement();
+        /*ball.startMovement();*/
+        sendToServer(TestSocket, "Space");
         break;
     case sf::Keyboard::Z: {
         /*isMovingUp = isPressed;*/
-        sendToServer(clientSocket, "Z");
+        if (isPressed) {
+            sendToServer(TestSocket, "Z");
+        }
+        else {
+            sendToServer(TestSocket, "stopZ");
+        }
         break;
     }
     case sf::Keyboard::S: {
         /*isMovingDown = isPressed;*/
-        sendToServer(clientSocket, "S");
+        if (isPressed) {
+            sendToServer(TestSocket, "S");
+        }
+        else {
+            sendToServer(TestSocket, "stopS");
+        }
         break;
     }
     case sf::Keyboard::Up: {
         /*isMovingLeft = isPressed;*/
-        sendToServer(clientSocket, "U");
+        if (isPressed) {
+            sendToServer(TestSocket, "U");
+        }
+        else {
+            sendToServer(TestSocket, "stopU");
+        }
         break;
     }
     case sf::Keyboard::Down: {
         /*isMovingRight = isPressed;*/
-        sendToServer(clientSocket, "D");
+        if (isPressed) {
+            sendToServer(TestSocket, "D");
+        }
+        else {
+            sendToServer(TestSocket, "stopD");
+        }
         break;
     }
     }

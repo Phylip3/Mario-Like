@@ -6,23 +6,32 @@
 #include "CoreGame/Paddle.h"
 #include "CoreGame/Ball.h"
 #include "CoreGame/ScoreManager.h"
+#include "CoreGame/Menu.h"
 
 class Game {
 public:
     Game();
     void run();
+    void processServerCommand(char command[1024]);
+    void receiveMessages();
 
+    static Game* GetInstance()
+    {
+        return instance;
+    }
 private:
+
+    char messageFS;
+    static Game* instance;
+
     void processEvents();
     void update(sf::Time deltaTime);
     void render();
     void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
-    void receiveServerMessages();
-    void processServerCommand(const std::string& command);
 
     sf::RenderWindow window;
     Ball ball;
-    std::thread serverThread;
+    //std::thread serverThread;
     Paddle leftPaddle;
     Paddle rightPaddle;
 

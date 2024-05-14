@@ -27,9 +27,12 @@ void handle_client(Client client) {
 
         std::lock_guard<std::mutex> guard(clients_mutex);
         for (const Client& other : clients) {
-            if (other.socket != client.socket) {
-                send(other.socket, buffer, bytesReceived, 0);
-                std::cout << "Message send !";
+            int sendResult = send(other.socket, buffer, bytesReceived, 0);
+            if (sendResult == SOCKET_ERROR) {
+                std::cerr << "Failed to send message to client " << other.id << ": " << WSAGetLastError() << std::endl;
+            }
+            else {
+                std::cout << " Message sent to client " << other.id << std::endl;
             }
         }
     }

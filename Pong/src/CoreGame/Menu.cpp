@@ -6,6 +6,8 @@
 #include <iostream>
 #include <thread>
 
+Game game;
+
 Menu::Menu(sf::RenderWindow& win) : window(win), enteringText(false), selectedItem(-1), serverRunning(false), isConnectedFlag(false) {
     if (!font.loadFromFile("../../Pong/includes/police/ArialMT.ttf")) {
         std::cerr << "Error loading font\n";
@@ -100,7 +102,6 @@ void Menu::draw() {
     }
     if (isConnectedFlag) {
         window.close();
-        Game game;
         game.run();
         window.close();
     }
@@ -117,3 +118,4 @@ bool Menu::isConnected() const {
 void Menu::setNotConnected() {
     isConnectedFlag = false;
 }
+

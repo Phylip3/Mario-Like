@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <thread>
+#include "../../includes/Game.h"
 
 class Menu {
 public:
