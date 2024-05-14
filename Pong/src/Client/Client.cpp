@@ -6,7 +6,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-const char* SERVER_IP = "192.168.0.17";  // Server IP address
+const char* SERVER_IP = "192.168.1.11";  // Server IP address
 const int SERVER_PORT = 2003;  // Server port
 
 SOCKET clientSocket = INVALID_SOCKET;

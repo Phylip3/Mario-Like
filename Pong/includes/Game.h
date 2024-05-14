@@ -35,6 +35,11 @@ private:
     Paddle leftPaddle;
     Paddle rightPaddle;
 
+    sf::Text instructionText;
+    sf::Text player1ControlText;
+    sf::Text player2ControlText;
+    sf::Font font;
+
     bool isMovingUp = false;
     bool isMovingDown = false;
     bool isMovingLeft = false;

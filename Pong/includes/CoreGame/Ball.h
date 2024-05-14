@@ -20,12 +20,13 @@ public:
     sf::Vector2f getPosition() const;
     //get radius
     float getRadius() const;
+    bool isMoving = false;
 
 private:
     sf::CircleShape ballShape;
     sf::Vector2f velocity;
     float maxBounceAngle = 75.0f; // Maximum reflection angle
-    bool isMoving = false;
+    
 };
 
 #endif

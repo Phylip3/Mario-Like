@@ -15,6 +15,37 @@ Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle( 10 , (w
     {
         instance = this;
     }
+
+    if (!font.loadFromFile("../../Pong/includes/police/ArialMT.ttf")) {
+        std::cout << "Error loading font\n";
+    }
+
+    instructionText.setFont(font);
+    instructionText.setString("Press space to start");
+    instructionText.setCharacterSize(24);
+    instructionText.setFillColor(sf::Color::White);
+    sf::FloatRect textRect = instructionText.getLocalBounds();
+    instructionText.setOrigin(textRect.width / 2, textRect.height / 2);
+    instructionText.setPosition(window.getSize().x / 2, window.getSize().y / 2 - 100);
+
+    // Texte de contrôle pour le joueur 1
+    player1ControlText.setFont(font);
+    player1ControlText.setString("Player 1 controls: Z/S");
+    player1ControlText.setCharacterSize(16);
+    player1ControlText.setFillColor(sf::Color::White);
+    sf::FloatRect player1Rect = player1ControlText.getLocalBounds();
+    player1ControlText.setOrigin(player1Rect.width / 2, player1Rect.height / 2);
+    player1ControlText.setPosition(window.getSize().x / 4, window.getSize().y / 2 - 50);
+
+    // Texte de contrôle pour le joueur 2
+    player2ControlText.setFont(font);
+    player2ControlText.setString("Player 2 controls: Up/Down");
+    player2ControlText.setCharacterSize(16);
+    player2ControlText.setFillColor(sf::Color::White);
+    sf::FloatRect player2Rect = player2ControlText.getLocalBounds();
+    player2ControlText.setOrigin(player2Rect.width / 2, player2Rect.height / 2);
+    player2ControlText.setPosition(3 * window.getSize().x / 4, window.getSize().y / 2 - 50);
+
 }
 
 void Game::run() {
@@ -150,6 +181,13 @@ void Game::render() {
     leftPaddle.draw(window);
     rightPaddle.draw(window);
     scoreManager.draw(window);
+
+    if (!ball.isMoving) {
+        window.draw(instructionText);
+        window.draw(player1ControlText);
+        window.draw(player2ControlText);
+    }
+    
     ball.draw(window);
     window.display();
 }
