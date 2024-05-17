@@ -95,8 +95,8 @@ projet-pong-multijoueur/
 ```
 
 ## Contributeurs
-- **AKAR Kamel** - Développeur principal
-- **REVOL-BUISSON Martin** - Développeur principal
+- **AKAR Kamel** - Développeur principal (gameplay)
+- **REVOL-BUISSON Martin** - Développeur principal (serveur & réseau)
 
 ## Remerciements
 Un merci particulier à Benoit pour nous avoir épaulé et conseillé durant toute la durée du projet (surtout pour la partie avec les threads).
