@@ -52,10 +52,6 @@ Vous devrez lancer trois instances du jeu pour une partie complète :
 1. Une instance en tant que serveur.
 2. Deux instances en tant que joueurs.
 
-Pour lancer plusieurs instances :
-- **Visual Studio** : Lancez deux instances en utilisant "Démarrer une nouvelle instance".
-- **Rider** : Lancez la troisième instance.
-
 ### Utilisation
 ### Démarrer le jeu
 - Lancez le jeu en exécutant l'exécutable généré après la compilation.
@@ -100,9 +96,9 @@ projet-pong-multijoueur/
 
 ## Contributeurs
 - **AKAR Kamel** - Développeur principal
-- **REVOL-BUISON Martin** - Développeur principal
+- **REVOL-BUISSON Martin** - Développeur principal
 
 ## Remerciements
-Un merci particulier à Benoit pour nous avoir épaulé et conseillé durant toute la durée du projet.
+Un merci particulier à Benoit pour nous avoir épaulé et conseillé durant toute la durée du projet (surtout pour la partie avec les threads).
 
 ---
