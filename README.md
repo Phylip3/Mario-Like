@@ -79,6 +79,8 @@ projet-pong-multijoueur/
 │   │   ├── Menu.h
 │   │   ├── Paddle.h
 │   │   └── ScoreManager.h
+│   ├── police/
+│   │   └──ArialMT.ttf
 │   ├── Server/
 │   │   └── Server.h
 │   └── Game.h
@@ -93,9 +95,6 @@ projet-pong-multijoueur/
 │   ├── Server/
 │   │   └── Server.cpp
 │   └── Game.cpp
-├── assets/
-│   └── fonts/
-│       └── [votre_police.ttf]
 ├── CMakeLists.txt
 ├── build.bat
 └── README.md
