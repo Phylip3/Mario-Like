@@ -6,7 +6,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-const char* SERVER_IP = "192.168.1.11";  // Server IP address
+const char* SERVER_IP = "192.168.1.11";  // Server IP address depending on the network
 const int SERVER_PORT = 2003;  // Server port
 
 SOCKET clientSocket = INVALID_SOCKET;
@@ -40,11 +40,13 @@ SOCKET clientSocket = INVALID_SOCKET;
 
 void connectToServer() {
     WSADATA wsaData;
+    // Initialisation de Winsock
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "WSAStartup failed.\n";
         return;
     }
 
+    // Vérification de la création du socket
     clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (clientSocket == INVALID_SOCKET) {
         std::cerr << "Socket creation failed: " << WSAGetLastError() << "\n";
@@ -52,7 +54,7 @@ void connectToServer() {
         return;
     }
 
-    // Set the socket to non-blocking mode
+    // Définir le socket en mode non-bloquant
     u_long mode = 1;  // 1 pour activer le mode non bloquant
     if (ioctlsocket(clientSocket, FIONBIO, &mode) != 0) {
         std::cerr << "Failed to set non-blocking mode: " << WSAGetLastError() << "\n";
@@ -64,6 +66,7 @@ void connectToServer() {
     sockaddr_in serverAddr{};
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(SERVER_PORT);
+    // Conversion de l'adresse IP en format binaire
     if (inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr) <= 0) {
         std::cerr << "Invalid IP address\n";
         closesocket(clientSocket);

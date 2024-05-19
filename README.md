@@ -45,12 +45,19 @@ cmake --build .
 ### 4. Compilation du projet
 Pour compiler le projet, ouvrez Visual Studio ou Rider et chargez le projet généré. Assurez-vous de définir le projet comme projet de démarrage :
 - **Visual Studio** : Clic droit sur le projet -> "Définir comme projet de démarrage"
-- **Rider** : En haut a droite -> "Sélectionner Pong"
+- **Rider** : En haut à droite -> "Sélectionner Pong"
 
 ### 5. Exécuter le jeu
+Tout d'abord, il vous faut changer l'adresse IP présente dans le fichier Client.cpp en fonction de votre réseau :
+
+1. Ouvrez un invité de commande et exécutez ipconfig.
+2. Repérez votre carte réseau et son adresse IP, puis copiez-la.
+3. Collez l'adresse IP dans le fichier Client.cpp à la ligne 9 à la place de l'IP déjà présente.
+
 Vous devrez lancer trois instances du jeu pour une partie complète :
 1. Une instance en tant que serveur.
-2. Deux instances en tant que joueurs.
+2. La première instance de joueur peut être lancée sur la même machine que le serveur.
+3. La deuxième instance de joueur doit être lancée sur une seconde machine.
 
 ### Utilisation
 ### Démarrer le jeu

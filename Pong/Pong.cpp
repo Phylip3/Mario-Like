@@ -2,9 +2,11 @@
 #include <SFML/Graphics.hpp>
 
 int main() {
+    // Créer une fenêtre SFML
     sf::RenderWindow window(sf::VideoMode(800, 600), "Pong Menu");
     Menu menu(window);
 
+    // Boucle principale du jeu
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -22,10 +24,3 @@ int main() {
 
     return 0;
 }
-
-
-//int main() {
-//    Game game;
-//    game.run();
-//    return 0;
-//}

@@ -53,6 +53,7 @@ Menu::Menu(sf::RenderWindow& win) : window(win), enteringText(false), selectedIt
 }
 
 void Menu::handleEvent(sf::Event& event) {
+    // Gestion des clics de souris pour sélectionner un élément du menu
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
         for (int i = 0; i < 2; i++) {
             if (menuItems[i].getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
@@ -88,6 +89,7 @@ void Menu::update() {
 }
 
 void Menu::draw() {
+    // Dessiner les éléments du menu
     if (!serverRunning && !isConnectedFlag) {
         for (auto& item : menuItems) {
             window.draw(item);
@@ -97,9 +99,11 @@ void Menu::draw() {
             window.draw(inputText);
         }
     }
+    // Afficher le statut du serveur
     if (serverRunning) {
         window.draw(serverStatus);
     }
+    // Lancer le jeu si connecté
     if (isConnectedFlag) {
         window.close();
         game.run();

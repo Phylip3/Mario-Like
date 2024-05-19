@@ -42,8 +42,8 @@ private:
 
     bool isMovingUp = false;
     bool isMovingDown = false;
-    bool isMovingLeft = false;
-    bool isMovingRight = false;
+    bool isMovingUpArrow = false;
+    bool isMovingDownArrow = false;
 
     ScoreManager scoreManager;
 };  

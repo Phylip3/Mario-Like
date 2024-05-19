@@ -10,7 +10,7 @@ ScoreManager::ScoreManager(sf::RenderWindow& window) : scoreLeft(0), scoreRight(
     scoreText.setCharacterSize(24);
     scoreText.setFillColor(sf::Color::White);
     scoreText.setString("0 - 0");
-    // Assume window size or use a function to set position
+    // Positionner le texte du score au centre en haut de la fenêtre
     scoreText.setPosition(window.getSize().x/2 - scoreText.getLocalBounds().width / 2, 10);
     
 }
@@ -36,6 +36,7 @@ void ScoreManager::draw(sf::RenderWindow& window) {
 }
 
 void ScoreManager::updateText() {
+    // Mettre à jour le texte du score
     scoreText.setString(std::to_string(scoreLeft) + " - " + std::to_string(scoreRight));
     //scoreText.setPosition(window.getSize().x/2 - scoreText.getLocalBounds().width / 2, 10);
     std::cout << window.getSize().x << std::endl;

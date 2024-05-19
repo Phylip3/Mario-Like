@@ -20,6 +20,7 @@ Game::Game() : window(sf::VideoMode(640, 480), "SFML Pong"), leftPaddle( 10 , (w
         std::cout << "Error loading font\n";
     }
 
+    // Initialiser le texte d'instruction
     instructionText.setFont(font);
     instructionText.setString("Press space to start");
     instructionText.setCharacterSize(24);
@@ -79,43 +80,44 @@ void Game::receiveMessages() {
                 std::cerr << "Recv failed with error: " << error << "\n";
                 break;
             }
-            // Else it is WSAEWOULDBLOCK, no data available yet, continue the loop
+            // Sinon c'est WSAEWOULDBLOCK, aucune donnée disponible pour le moment, continuer la boucle
         }
     }
-    closesocket(clientSocket); // Make sure to close the socket when finished
+    closesocket(clientSocket); // S'assure de fermer le socket une fois terminé
     WSACleanup();
 }
 
 void Game::processServerCommand(char command[1024]) {
     std::cout << command;
+    // Assure l'arrêter du mouvement lorsque la touche correspondant est relâchée
     if (strcmp(command, "Z") == 0) {
-        isMovingUp = true;  // Exemple de commande, ajustez selon le gameplay
+        isMovingUp = true; 
     }
     else if (strcmp(command, "stopZ") == 0) {
-        isMovingUp = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+        isMovingUp = false;  
     }
     else if (strcmp(command, "S") == 0) {
-        isMovingDown = true;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+        isMovingDown = true;  
     }
     else if (strcmp(command, "stopS") == 0) {
-        isMovingDown = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+        isMovingDown = false;  
     }
     else if (strcmp(command, "U") == 0) {
-        isMovingLeft = true;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+        isMovingUpArrow = true;  
     }
     else if (strcmp(command, "stopU") == 0) {
-        isMovingLeft = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+        isMovingUpArrow = false;  
     }
     else if (strcmp(command, "D") == 0) {
-        isMovingRight = true;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+        isMovingDownArrow = true;  
     }
     else if (strcmp(command, "stopD") == 0) {
-        isMovingRight = false;  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+        isMovingDownArrow = false;  
     }
     else if (strcmp(command, "Space") == 0) {
-        ball.startMovement();  // Assurez-vous d'arrêter le mouvement lorsque la touche est relâchée
+        ball.startMovement();  
     }
-    // Ajoutez d'autres commandes selon vos besoins
+    
 }
 
 void Game::processEvents() {
@@ -150,10 +152,10 @@ void Game::update(sf::Time deltaTime) {
     if (isMovingDown) {
         leftPaddle.moveDown(deltaTime, window.getSize().y);
     }
-    if (isMovingLeft) {
+    if (isMovingUpArrow) {
         rightPaddle.moveUp(deltaTime);
     }
-    if (isMovingRight) {
+    if (isMovingDownArrow) {
         rightPaddle.moveDown(deltaTime, window.getSize().y);
     }
 
@@ -181,7 +183,8 @@ void Game::render() {
     leftPaddle.draw(window);
     rightPaddle.draw(window);
     scoreManager.draw(window);
-
+    
+    // Afficher les textes d'instruction et de contrôle si la balle n'est pas en mouvement
     if (!ball.isMoving) {
         window.draw(instructionText);
         window.draw(player1ControlText);
@@ -193,16 +196,13 @@ void Game::render() {
 }
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed) {
-    //if (!isPressed) return;
     SOCKET TestSocket = getClientSocket();
     
     switch (key) {
     case sf::Keyboard::Space:
-        /*ball.startMovement();*/
         sendToServer(TestSocket, "Space");
         break;
     case sf::Keyboard::Z: {
-        /*isMovingUp = isPressed;*/
         if (isPressed) {
             sendToServer(TestSocket, "Z");
         }
@@ -212,7 +212,7 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed) {
         break;
     }
     case sf::Keyboard::S: {
-        /*isMovingDown = isPressed;*/
+        
         if (isPressed) {
             sendToServer(TestSocket, "S");
         }
@@ -222,7 +222,6 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed) {
         break;
     }
     case sf::Keyboard::Up: {
-        /*isMovingLeft = isPressed;*/
         if (isPressed) {
             sendToServer(TestSocket, "U");
         }
@@ -232,7 +231,6 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed) {
         break;
     }
     case sf::Keyboard::Down: {
-        /*isMovingRight = isPressed;*/
         if (isPressed) {
             sendToServer(TestSocket, "D");
         }
